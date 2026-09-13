@@ -27,13 +27,15 @@ npm run dev
 ### Генерация секретов
 
 ```bash
-# пароль админа → bcrypt hash
+# пароль админа → строка для .env (с экранированием $ для Next.js)
 npm run admin:hash -- "your-strong-password"
 
 # session + encryption keys
 openssl rand -base64 48   # SESSION_SECRET
 openssl rand -base64 32   # CREDENTIALS_ENCRYPTION_KEY
 ```
+
+> **Важно:** bcrypt-hash содержит `$`. В `.env` для Next.js каждый `$` нужно писать как `\$`, иначе логин не сработает. Скрипт `admin:hash` выводит уже экранированную строку.
 
 ## Безопасность админки
 
