@@ -1,0 +1,94 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+/// Pulse / DataPulse user account
+model Account {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  displayName  String?
+  /// Optional device / installation id from Pulse client
+  deviceId     String?  @unique
+  /// Hashed API token for client → server reporting
+  apiTokenHash String   @unique
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  lastSeenAt   DateTime?
+
+  connections OneCConnection[]
+  logs        ConnectionLog[]
+}
+
+/// 1C connection credentials and live status for an account
+model OneCConnection {
+  id                   String    @id @default(cuid())
+  accountId            String
+  label                String?
+  /// e.g. http://server/base or COM path
+  serverUrl            String
+  baseName             String?
+  username             String
+  /// AES-256-GCM ciphertext (base64): iv.tag.ciphertext
+  passwordEncrypted    String
+  /// http | com | odata | other
+  protocol             String    @default("http")
+  /// unknown | connected | degraded | error | disconnected
+  status               String    @default("unknown")
+  lastStatusMessage    String?
+  lastCheckedAt        DateTime?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  account Account         @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  logs    ConnectionLog[]
+
+  @@index([accountId])
+  @@index([status])
+}
+
+/// Connection / sync event log from Pulse clients
+model ConnectionLog {
+  id           String   @id @default(cuid())
+  accountId    String
+  connectionId String?
+  /// info | warn | error | debug
+  level        String   @default("info")
+  event        String
+  message      String
+  detailsJson  String?
+  createdAt    DateTime @default(now())
+
+  account    Account         @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  connection OneCConnection? @relation(fields: [connectionId], references: [id], onDelete: SetNull)
+
+  @@index([accountId, createdAt])
+  @@index([connectionId, createdAt])
+  @@index([level, createdAt])
+}
+
+/// Brute-force protection for admin login
+model LoginAttempt {
+  id        String   @id @default(cuid())
+  ip        String
+  success   Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([ip, createdAt])
+}
+
+/// Audit trail for admin actions
+model AdminAuditLog {
+  id        String   @id @default(cuid())
+  action    String
+  target    String?
+  ip        String?
+  details   String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}

@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #e8eef3;
+  --bg-deep: #d5dee8;
+  --surface: #f7f9fb;
+  --ink: #132033;
+  --muted: #5a6b7d;
+  --line: #c5d0dc;
+  --accent: #0b6e6b;
+  --accent-soft: #d4efed;
+  --warn: #b45309;
+  --danger: #b42318;
+  --ok: #157a3b;
+  --mono: var(--font-mono);
+  --sans: var(--font-sans);
+}
+
+@theme inline {
+  --color-background: var(--bg);
+  --color-foreground: var(--ink);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--sans), system-ui, sans-serif;
+  background:
+    radial-gradient(1200px 600px at 10% -10%, #cfe3e2 0%, transparent 55%),
+    radial-gradient(900px 500px at 100% 0%, #c9d7e8 0%, transparent 50%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg-deep) 100%);
+  background-attachment: fixed;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+::selection {
+  background: var(--accent-soft);
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
