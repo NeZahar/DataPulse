@@ -57,6 +57,7 @@ export default function AdminLoginPage() {
           <label className="block text-sm text-[var(--muted)]">
             Логин
             <input
+              name="username"
               autoComplete="username"
               className="mt-1.5 w-full border border-[var(--line)] bg-white px-3 py-2.5 outline-none transition focus:border-[var(--accent)]"
               value={username}
@@ -68,6 +69,7 @@ export default function AdminLoginPage() {
           <label className="mt-4 block text-sm text-[var(--muted)]">
             Пароль
             <input
+              name="password"
               type="password"
               autoComplete="current-password"
               className="mt-1.5 w-full border border-[var(--line)] bg-white px-3 py-2.5 outline-none transition focus:border-[var(--accent)]"
